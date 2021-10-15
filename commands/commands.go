@@ -29,7 +29,7 @@ func ParseCommand(s *discordgo.Session, m *discordgo.MessageCreate, message stri
 	commandName := strings.ToLower(msglist[0])
 
 	if command, ok := commands[commandName]; ok && commandName == strings.ToLower(command.Name) {
-		log.Printf("%v", msglist)
+		log.Printf("Called: %s | User: %s (%s) | Channel: %s | Guild: %s", strings.Join(msglist, " "), m.Author.Username, m.Author.ID, m.ChannelID, m.GuildID)
 		command.Exec(s, m, msglist)
 		return
 	}

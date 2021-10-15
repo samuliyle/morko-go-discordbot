@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -12,19 +12,29 @@ type ConfigValues struct {
 }
 
 type SecretValues struct {
-	Token string `json:"token"`
+	Token  string       `json:"token"`
+	Google GoogleValues `json:"google"`
+}
+
+type GoogleValues struct {
+	Id string `json:"id"`
+	Cx string `json:"cx"`
 }
 
 var (
-	config  = new(ConfigValues)
-	secrets = new(SecretValues)
+	Config  = new(ConfigValues)
+	Secrets = new(SecretValues)
 )
 
 func init() {
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.Println("Read config")
-	readJSON("config.json", &config)
+	readJSON(wd+"/config/config.json", &Config)
 	log.Println("Read secrets")
-	readJSON("secrets.json", &secrets)
+	readJSON(wd+"/config/secrets.json", &Secrets)
 }
 
 func readJSON(fileName string, v interface{}) {

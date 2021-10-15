@@ -10,6 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 
 	"github.com/samuliyle/morko-go-discordbot/commands"
+	"github.com/samuliyle/morko-go-discordbot/config"
 )
 
 func main() {
@@ -21,7 +22,7 @@ func main() {
 	defer file.Close()
 	// log.SetOutput(file)
 
-	dg, err := discordgo.New("Bot " + secrets.Token)
+	dg, err := discordgo.New("Bot " + config.Secrets.Token)
 	if err != nil {
 		log.Fatal("error creating Discord session,", err)
 	}
@@ -51,6 +52,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	commands.ParseCommand(s, m, func() string {
-		return strings.TrimPrefix(m.Content, config.CommandPrefix)
+		return strings.TrimPrefix(m.Content, config.Config.CommandPrefix)
 	}())
 }

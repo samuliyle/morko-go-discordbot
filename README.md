@@ -14,7 +14,9 @@ uptime    Bots uptime
 
 ## Secrets
 
-Enter bot token to /config/secrets.json.
+Rename secrets_sample.json to secrets.json.
+
+Enter bot token to secrets.json.
 
 (optional) Enter Google and Database secrets to enable google and database commands.
 

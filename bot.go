@@ -11,6 +11,7 @@ import (
 
 	"github.com/samuliyle/morko-go-discordbot/commands"
 	"github.com/samuliyle/morko-go-discordbot/config"
+	"github.com/samuliyle/morko-go-discordbot/database"
 )
 
 func main() {
@@ -46,8 +47,13 @@ func main() {
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	// Ignore all messages created by the bot itself
-	if m.Author.ID == s.State.User.ID {
+	// Ignore bots
+	if m.Author.Bot {
+		return
+	}
+
+	if !strings.HasPrefix(m.Content, config.Config.CommandPrefix) {
+		database.LogMessage(s, m)
 		return
 	}
 

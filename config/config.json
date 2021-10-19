@@ -1,3 +1,7 @@
 {
-  "commandPrefix": "!"
+  "commandPrefix": "!",
+  "database": {
+    "url": "localhost",
+    "name": "discord"
+  }
 }

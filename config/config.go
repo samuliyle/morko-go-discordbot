@@ -8,17 +8,29 @@ import (
 )
 
 type ConfigValues struct {
-	CommandPrefix string `json:"commandPrefix"`
+	CommandPrefix string         `json:"commandPrefix"`
+	Database      databaseValues `json:"database"`
 }
 
 type SecretValues struct {
-	Token  string       `json:"token"`
-	Google GoogleValues `json:"google"`
+	Token    string          `json:"token"`
+	Google   googleSecrets   `json:"google"`
+	Database databaseSecrets `json:"database"`
 }
 
-type GoogleValues struct {
+type databaseValues struct {
+	URL  string `json:"url"`
+	Name string `json:"name"`
+}
+
+type googleSecrets struct {
 	Id string `json:"id"`
 	Cx string `json:"cx"`
+}
+
+type databaseSecrets struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 var (
@@ -43,9 +55,12 @@ func readJSON(fileName string, v interface{}) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer configFile.Close()
 
-	byteValue, _ := ioutil.ReadAll(configFile)
+	byteValue, err := ioutil.ReadAll(configFile)
+	if err != nil {
+		log.Fatal(err)
+	}
 	json.Unmarshal(byteValue, v)
 
-	configFile.Close()
 }

@@ -24,7 +24,11 @@ type item struct {
 }
 
 func init() {
-	newCommand("google", "Fetches a Google image", googleImage).setHelp("args: [query]\n\nexample: !google forsen").add()
+	disabled := false
+	if len(config.Secrets.Google.Cx) == 0 || len(config.Secrets.Google.Id) == 0 {
+		disabled = true
+	}
+	newCommand("google", "Fetches a Google image", googleImage).setDisabled(disabled).setHelp("args: [query]\n\nexample: !google forsen").add()
 }
 
 func googleImage(s *discordgo.Session, m *discordgo.MessageCreate, msglist []string) {
@@ -32,7 +36,7 @@ func googleImage(s *discordgo.Session, m *discordgo.MessageCreate, msglist []str
 		return
 	}
 	rand.Seed(time.Now().UnixNano())
-	search := strings.Join(msglist, "%20")
+	search := strings.Join(msglist[1:], "%20")
 	url := fmt.Sprintf("https://www.googleapis.com/customsearch/v1?q=%s&searchType=image&cx=%s&num=1&start=%d&imgsize=medium&key=%s&num=1", search, config.Secrets.Google.Cx, rand.Intn(10), config.Secrets.Google.Id)
 
 	resp, err := http.Get(url)

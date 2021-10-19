@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	newCommand("remind", "Sets a reminder", remind).setHelp("args: [minutes]\n\nexample: !remind 15 food").add()
+	newCommand("remind", "Sets a reminder", remind).setHelp("args: [minutes] (message)\n\nexample: !remind 15 food").add()
 }
 
 func remind(s *discordgo.Session, m *discordgo.MessageCreate, msglist []string) {
@@ -19,7 +19,7 @@ func remind(s *discordgo.Session, m *discordgo.MessageCreate, msglist []string) 
 		return
 	}
 	msg := ""
-	if len(msglist) > 1 {
+	if len(msglist) > 2 {
 		msg = strings.Join(msglist[2:], " ")
 	}
 	i, err := strconv.Atoi(msglist[1])

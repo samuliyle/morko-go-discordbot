@@ -27,7 +27,7 @@ func quote(s *discordgo.Session, m *discordgo.MessageCreate, msglist []string) {
 	count := 1
 	if len(msglist) > 1 {
 		i, err := strconv.Atoi(msglist[1])
-		if err != nil {
+		if err == nil {
 			count = i
 		}
 	}

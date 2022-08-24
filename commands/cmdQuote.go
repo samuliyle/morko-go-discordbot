@@ -34,7 +34,7 @@ func quote(s *discordgo.Session, m *discordgo.MessageCreate, msglist []string) {
 	if count < 1 || count > 10 {
 		count = 1
 	}
-	rows, err := database.DB.Query("CALL get_rands(?, ?)", count, m.ChannelID)
+	rows, err := database.DB.Query("SELECT message,username,time FROM messages where channelid = ? ORDER BY 37*(UNIX_TIMESTAMP() ^ messages.id) & 0xffff limit ?;", m.ChannelID, count)
 	if err != nil {
 		log.Println("Failed to connect DB, ", err)
 		return

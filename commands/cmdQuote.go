@@ -2,7 +2,9 @@ package commands
 
 import (
 	"log"
+	"math/rand"
 	"strconv"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -34,11 +36,35 @@ func quote(s *discordgo.Session, m *discordgo.MessageCreate, msglist []string) {
 	if count < 1 || count > 10 {
 		count = 1
 	}
-	rows, err := database.DB.Query("SELECT message,username,time FROM messages where channelid = ? ORDER BY 37*(UNIX_TIMESTAMP() ^ messages.id) & 0xffff limit ?;", m.ChannelID, count)
+
+	countRows, err := database.DB.Query("SELECT max(id) as maxCount from messages;")
 	if err != nil {
 		log.Println("Failed to connect DB, ", err)
 		return
 	}
+	defer countRows.Close()
+
+	var maxCount int
+	for countRows.Next() {
+		countRows.Scan(&maxCount)
+	}
+
+	query := "SELECT message,username,time FROM messages WHERE id IN ("
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < count+5; i++ {
+		query += strconv.Itoa(rand.Intn(maxCount))
+		if i+1 != count+5 {
+			query += ","
+		}
+	}
+	query += ") limit ?;"
+	rows, err := database.DB.Query(query, count)
+	if err != nil {
+		log.Println("Failed to connect DB, ", err)
+		return
+	}
+	defer rows.Close()
+
 	quotes := ""
 	for rows.Next() {
 		var r message

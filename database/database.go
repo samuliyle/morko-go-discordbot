@@ -29,8 +29,10 @@ func LogMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	_, err := DB.Query("INSERT INTO messages (message, userId, channelId, username, time) values(?, ?, ?, ?, NOW())", m.Content, m.Author.ID, m.ChannelID, m.Author.Username)
-	if err != nil {
+	insertRow, insertError := DB.Query("INSERT INTO messages (message, userId, channelId, username, time) values(?, ?, ?, ?, NOW())", m.Content, m.Author.ID, m.ChannelID, m.Author.Username)
+	if insertError != nil {
 		log.Println("Failed to insert message, ", err)
+		return
 	}
+	insertRow.Close()
 }
